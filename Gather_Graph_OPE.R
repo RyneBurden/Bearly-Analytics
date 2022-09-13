@@ -26,10 +26,10 @@ if (!require("magrittr")) {
 # Usage: Rscript Gather_Graph_OPE.R <season> <week>
 
 args <- commandArgs(trailingOnly = TRUE)
-current_season <-args[1]
-current_week <- args[2]
+current_season <- as.integer(args[1])
+current_week <- as.integer(args[2])
 
-current_season_pbp <- nflfastR::load_pbp(as.integer(current_season))
+current_season_pbp <- nflfastR::load_pbp(current_season)
 
 current_season_pbp <- mutate(current_season_pbp, win = if_else(home_score > away_score, if_else(posteam == home_team, TRUE, FALSE), if_else(posteam == away_team, TRUE, FALSE)))
 

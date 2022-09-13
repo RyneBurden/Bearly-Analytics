@@ -8,6 +8,11 @@ if (!require("nflfastR")) {
   library("nflfastR", verbose = FALSE)
 }
 
+if (!require("nflreadr")) {
+  install.packages("nflreadr", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("nflreadr", verbose = FALSE)
+}
+
 if (!require("glue")) {
   install.packages("glue", repos = "http://cran.us.r-project.org", verbose = FALSE)
   library("glue", verbose = FALSE)
@@ -30,8 +35,8 @@ if (!require("magrittr")) {
 
 # ----- OFFENSE STAT GATHER ----- #
 args <- commandArgs(trailingOnly = TRUE)
-current_season <-args[1]
-current_week <- args[2]
+current_season <- as.integer(args[1])
+current_week <- as.integer(args[2])
 # save_score_plot <- readline("Do you want to save the team efficiency plot for the week? ")
 # save_competition_plot <- readline("Do you want to save the competition plot for the week? ")
 save_score_plot <- "yes"
@@ -159,16 +164,15 @@ Team_Score_Plot <- Team_Scores %>%
 
 #Save plot
 # Values for height and width were found using a pixels to inches converter for 1024 x 512
-if (save_score_plot == "yes" | save_score_plot == "y") {
-  ggsave(glue("Graphics/General Efficiency/", current_season, "/GES_", current_season, "_Week_", current_week, ".png"), Team_Score_Plot, device = "png", dpi = "retina", height = 6.75, width = 12)
-}
+ggsave(glue("Graphics/General Efficiency/", current_season, "/GES_", current_season, "_Week_", current_week, ".png"), Team_Score_Plot, device = "png", dpi = "retina", height = 6.75, width = 12)
+
 
 # ----- GAME COMPETITIVENESS PLOT ----- #
 
 # Filter the NFL schedule for the given week - upcoming week is 9
-Week_Games <- NFL_schedule %>% 
-  filter(week == current_week, season == current_season) %>%
-  group_by(game_id) ### DELETE AT END OF FILE
+Week_Games <- nflreadr::load_schedules(current_season) %>% 
+  filter(week == current_week) %>%
+  group_by(game_id)
 
 # Create empty tibble to use in the loop below
 current_week_data <- tibble(Game_Num = numeric(), Away_Team = character(), Away_Team_EScore = numeric(), Home_Team = character(), Home_Team_EScore = numeric(), Away_Logo = character(), Home_Logo = character())
@@ -184,7 +188,7 @@ for (row in 1:nrow(Week_Games)) {
   Current_Away_Color <- Team_Scores[Away_Index, 6] %>% as.character()
   
   # Current home team info - uses ESPN logo
-  Current_Home <- Week_Games[row, 9] %>% as.character()
+  Current_Home <- Week_Games[row, 10] %>% as.character()
   Home_Index <- which(Team_Scores$Team == Current_Home) %>% as.integer()
   Current_Home_Eff <- Team_Scores[Home_Index, 2] %>% as.double()
   Current_Home_Logo <- Team_Scores[Home_Index, 11] %>% as.character()
@@ -208,13 +212,19 @@ colnames(current_week_data) = c("Game_Num", "Away_Team", "Away_Team_EScore", "Ho
 
 xend_list <- data.frame(matrix(ncol = 4, nrow = 1))
 
+teams <- nflreadr::load_teams()
+teams <- teams[, c("team_abbr", "team_division")]
+
 # This populates our xend list for each remaining game
 for (game in seq_len(nrow(current_week_data))) {
   
-  away_team_div <- teams %>% filter(Team == current_week_data[game, 2]) %>% select(Division)
-  home_team_div <- teams %>% filter(Team == current_week_data[game, 4]) %>% select(Division)
-
-  if (away_team_div$Division == home_team_div$Division) {
+  away = current_week_data[game, 2]
+  home = current_week_data[game, 4]
+  
+  away_team_div <- teams %>% filter(team_abbr == away) %>% select(team_division)
+  home_team_div <- teams %>% filter(team_abbr == home) %>% select(team_division)
+  
+  if (away_team_div$team_division == home_team_div$team_division) {
     current_fill <- "Red"
   }
   else {
@@ -260,6 +270,4 @@ Competition_Plot <- current_week_data %>%
   scale_y_discrete(breaks = scales::pretty_breaks(n = 10)) +
   scale_x_continuous(breaks = scales::pretty_breaks(n = 10))
 
-if (save_competition_plot == 'yes' | save_competition_plot == 'y') {
-  ggsave(glue("S:\\Projects\\Bearly Analytics\\Graphics\\Efficiency Gaps\\", current_season, "\\EG_", current_season, "_Week_", current_week, ".png"), Competition_Plot, device = "png", dpi = "retina", height = 6.75, width = 12)
-}
+ggsave(glue("S:\\Projects\\Bearly Analytics\\Graphics\\Efficiency Gaps\\", current_season, "\\EG_", current_season, "_Week_", current_week, ".png"), Competition_Plot, device = "png", dpi = "retina", height = 6.75, width = 12)
