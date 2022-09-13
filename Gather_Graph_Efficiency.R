@@ -1,9 +1,32 @@
-library("tidyverse")
-library("nflfastR")
-library("glue")
-library("ggimage")
-library("ggrepel")
-library("magrittr")
+if (!require("tidyverse")) {
+  install.packages("tidyverse", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("tidyverse", verbose = FALSE)
+}
+
+if (!require("nflfastR")) {
+  install.packages("nflfastR", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("nflfastR", verbose = FALSE)
+}
+
+if (!require("glue")) {
+  install.packages("glue", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("glue", verbose = FALSE)
+}
+
+if (!require("ggimage")) {
+  install.packages("ggimage", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("ggimage", verbose = FALSE)
+}
+
+if (!require("ggrepel")) {
+  install.packages("ggrepel", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("ggrepel", verbose = FALSE)
+}
+
+if (!require("magrittr")) {
+  install.packages("magrittr", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("magrittr", verbose = FALSE)
+}
 
 # ----- OFFENSE STAT GATHER ----- #
 args <- commandArgs(trailingOnly = TRUE)

@@ -1,8 +1,27 @@
-library("nflfastR")
-library("tidyverse")
-library("ggrepel")
-library("magrittr")
-library("glue")
+if (!require("tidyverse")) {
+  install.packages("tidyverse", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("tidyverse", verbose = FALSE)
+}
+
+if (!require("nflfastR")) {
+  install.packages("nflfastR", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("nflfastR", verbose = FALSE)
+}
+
+if (!require("glue")) {
+  install.packages("glue", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("glue", verbose = FALSE)
+}
+
+if (!require("ggrepel")) {
+  install.packages("ggrepel", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("ggrepel", verbose = FALSE)
+}
+
+if (!require("magrittr")) {
+  install.packages("magrittr", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("magrittr", verbose = FALSE)
+}
 
 # Usage: Rscript Gather_Graph_OPE.R <season> <week>
 

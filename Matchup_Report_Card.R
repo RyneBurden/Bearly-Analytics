@@ -1,11 +1,29 @@
 # Make the ratings based on league averages for offense/defense/kicking/etc
 # First-down rate , Off EPA(Rush and Pass), Def EPA(Rush and Pass)
+if (!require("tidyverse")) {
+  install.packages("tidyverse", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("tidyverse", verbose = FALSE)
+}
 
-library("tidyverse")
-library("nflfastR")
-library("magrittr")
-library("gt")
-library("glue")
+if (!require("nflfastR")) {
+  install.packages("nflfastR", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("nflfastR", verbose = FALSE)
+}
+
+if (!require("glue")) {
+  install.packages("glue", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("glue", verbose = FALSE)
+}
+
+if (!require("gt")) {
+  install.packages("gt", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("gt", verbose = FALSE)
+}
+
+if (!require("magrittr")) {
+  install.packages("magrittr", repos = "http://cran.us.r-project.org", verbose = FALSE)
+  library("magrittr", verbose = FALSE)
+}
 
 
 
